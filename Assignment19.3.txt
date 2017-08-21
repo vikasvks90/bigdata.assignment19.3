@@ -1,0 +1,37 @@
+1)
+scan 'customer' ,{ FILTER => "SingleColumnValueFilter('details','location',=, 'binary:AUS')" }
+
+
+
+
+2)
+sudo yum install boost-devel php-devel pcre-devel automake libtool flex bison pkgconfig gcc-c++ boost-devel libevent-devel zlib-devel python-devel ruby-devel libtool*
+
+wget https://archive.apache.org/dist/thrift/0.6.0/thrift-0.6.0.tar.gz
+
+tar xfz thrift-0.6.0.tar.gz
+cd thrift-0.6.0/
+
+./configure
+
+sudo make
+ 
+sudo make install
+
+thrift --gen py /home/acadgild/thrift/Hbase.thrift
+
+export PYTHONPATH=$PYTHONPATH://home/acadgild/thrift/thrift-0.6.0/gen-py/
+
+hbase thrift start
+
+from thrift.transport.TSocket import TSocket
+from thrift.transport.TTransport import TBufferedTransport
+from thrift.protocol import TBinaryProtocol
+from hbase import Hbase 
+ 
+transport = TBufferedTransport(TSocket('localhost',9090))
+transport.open()
+protocol = TBinaryProtocol.TBinaryProtocol(transport)
+client = Hbase.Client(protocol)
+print(client.getTableNames())
+
